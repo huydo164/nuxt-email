@@ -119,15 +119,10 @@ export default {
       for (const [key, value] of Object.entries(this.dataSend)) {
         value["template_id"] =1;
         value["candidate_email"] = value.email
+        value["candidate_id"] = value.id
         value["content"] = this.changeText(this.getContentMailThank(value.category_mail), value.name);
         axios
-        .post("http://127.0.0.1:8000/api/send-mail", value)
-        .then((response) => {
-          axios.post(
-            "http://127.0.0.1:8000/api/history?candidate_id=" + value.id,
-            value
-          );
-        });
+        .post("http://127.0.0.1:8000/api/send-mail", value);
       }
     },
     changeText: function(content, name) {

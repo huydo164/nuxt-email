@@ -148,7 +148,6 @@ export default {
           value["label"] = value["name"];
         });
         this.dataMailOffer.unshift({ value: 0, label: "----Choose mail ----" });
-        console.log(this.dataMailOffer);
       });
     },
     getContentMailOffer(id) {
@@ -163,6 +162,7 @@ export default {
         } else {
           value["template_id"] = 3;
           value["candidate_email"] = value.email
+          value["candidate_id"] = value.id
           value["content"] = this.changeText(
             this.getContentMailOffer(value.category_mail),
             value["name"],
@@ -170,16 +170,9 @@ export default {
             this.getPosition(value["position"]),
             value["salary"]
           );
-          (value["date_work"] = value.date), (value["salary"] = value.salary);
-
-          axios
-          .post("http://127.0.0.1:8000/api/send-mailOffer", value)
-          .then((response) => {
-            axios.post(
-              "http://127.0.0.1:8000/api/history?candidate_id=" + value.id,
-              value
-            );
-          });
+          value["date_work"] = value.date
+          value["salary"] = value.salary
+          axios.post("http://127.0.0.1:8000/api/send-mailOffer", value)
         }
       }
     },
@@ -245,7 +238,6 @@ export default {
           ? this.dataSend.splice(index, 1)
           : (this.dataSend[index] = item);
       }
-      console.log(this.dataSend);
     },
   },
 };

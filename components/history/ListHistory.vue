@@ -86,7 +86,6 @@ export default {
       dataTemplate: [],
     }
   },
-  // để tôi sửa lại 
 
   methods: {
     getPosition(id){
@@ -102,7 +101,8 @@ export default {
     },
 
     showModal(item){
-      this.content = item.content
+
+      this.content = item.content.replaceAll( "<br />" , "\n", item.content)
       this.warningModal = true
     },
 

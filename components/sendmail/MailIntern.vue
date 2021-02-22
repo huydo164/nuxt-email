@@ -134,6 +134,7 @@ export default {
       for (const [key, value] of Object.entries(this.dataSend)) {
         value["template_id"] = 2;
         value["candidate_email"] = value.email
+        value["candidate_id"] = value.id
         value["content"] = this.changeText(
           this.getContentMailIntern(value.category_mail),
           value["name"],
@@ -146,16 +147,7 @@ export default {
         if (!value.dateTime) {
           this.errors.push('Phải nhập đầy đủ dữ liệu')
         } else {
-          axios
-          .post("http://127.0.0.1:8000/api/send-mailIntern", value)
-          .then((response) => {
-            axios
-              .post(
-                "http://127.0.0.1:8000/api/history?candidate_id=" + value.id,
-                value
-              )
-              .then((response) => {});
-          });
+          axios.post("http://127.0.0.1:8000/api/send-mailIntern", value)
         }
       }
     },
