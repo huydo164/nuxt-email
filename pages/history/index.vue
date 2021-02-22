@@ -20,7 +20,7 @@ export default {
     return {
       dataHistory : [],
       dataCandidate: [],
-      cond: {}
+      condition: {}
     }
   },
 
@@ -38,7 +38,7 @@ export default {
       axios.get(url1).then((response) => {
         this.dataCandidate = response.data
       }).then(()=>{
-        axios.get(url, {params:this.cond}).then((response) => {
+        axios.get(url, {params:this.condition}).then((response) => {
           this.dataHistory = response.data
           this.dataHistory.map((item) => {
             this.dataCandidate.map(itemCandidate => {
@@ -52,7 +52,7 @@ export default {
     },
 
     doSearch(value) {
-      this.cond = value;
+      this.condition = value;
       this.fetchData();
     },
   }

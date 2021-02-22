@@ -14,6 +14,11 @@
            {{item.name}}
           </td>
         </template>
+        <template #email="{item}"> 
+          <td>
+           {{item.candidate_email}}
+          </td>
+        </template>
         <template #category="{item}">
           <td>
             {{getCategory(item.template_id)}}
@@ -22,6 +27,11 @@
         <template #position="{item}">
           <td>
              {{getPosition(item.position)}}
+          </td>
+        </template>
+        <template #created_at="{item}">
+          <td>
+             {{convertDate(item.created_at)}}
           </td>
         </template>
         <template #show="{item}">
@@ -44,19 +54,22 @@
 <script>
 
 import axios from "axios"
+import moment from "moment"
 import { LIST_POSITION } from "@/const/constdata";
 import { LIST_CATEGORY } from "@/const/constdata";
 const fields = [
-  {key : 'candidate_id',label :'Tên'},
-  {key: 'category', label: 'Loại mail'},
+  {key : 'candidate_id',label :'Name'},
+  {key: 'email', label: 'Email'},
+  {key: 'category', label: 'Mail Category'},
   {
     key: 'position',
-    label: 'Vị trí ứng tuyển'
+    label: 'Position'
   },
+  {key: 'created_at', label: 'Created At'},
   { 
     key: 'show', 
     label: '', 
-  }
+  },
 ]
 
 export default {
@@ -91,7 +104,12 @@ export default {
     showModal(item){
       this.content = item.content
       this.warningModal = true
-    }
+    },
+
+    convertDate(created) {
+      created = moment(String(created)).format("DD/MM/YYYY");
+      return created;
+    },
   }
 }
 </script>

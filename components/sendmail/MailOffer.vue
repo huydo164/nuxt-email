@@ -161,7 +161,8 @@ export default {
         if (!value.date || !value.salary) {
           this.errors.push("Phải nhập đầy đủ dữ liệu");
         } else {
-          value["template_id"] = value.category_mail;
+          value["template_id"] = 3;
+          value["candidate_email"] = value.email
           value["content"] = this.changeText(
             this.getContentMailOffer(value.category_mail),
             value["name"],
@@ -194,7 +195,7 @@ export default {
             this.getContentMailOffer(element.category_mail),
             item.name,
             item.date,
-            item.position,
+            this.getPosition(item.position),
             item.salary
           );
           this.warningModal = true;

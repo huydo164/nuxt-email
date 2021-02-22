@@ -18,7 +18,7 @@
         <CCol sm="12">
           <CTextarea
           label="Content"
-          row="10"
+          rows="20"
           v-model="form.content"
           >
           </CTextarea>

@@ -122,7 +122,7 @@ export default {
       axios.get(url).then((response) => {
         this.dataMailIntern = response.data;
         this.dataMailIntern.map(function(value,key) {
-          value['value'] = value['category']
+          value['value'] = value['id']
           value['label'] = value['name']
         });
         this.dataMailIntern.unshift({value:0, label:"----Choose mail ----" })
@@ -132,7 +132,8 @@ export default {
     sendMail: function() {
       this.errors = [];
       for (const [key, value] of Object.entries(this.dataSend)) {
-        value["template_id"] =2;
+        value["template_id"] = 2;
+        value["candidate_email"] = value.email
         value["content"] = this.changeText(
           this.getContentMailIntern(value.category_mail),
           value["name"],
@@ -180,7 +181,6 @@ export default {
           .replace("[Name]", name)
           .replace("[dateTime]", dateTime)
           .replace("[Position]", position);
-          console.log(content)
         return content;
       }
     },
@@ -208,8 +208,7 @@ export default {
     },
 
     getContentMailIntern(id){
-      const contentMail = this.dataMailIntern.find((element) => element.value === id)
-      return contentMail ? contentMail.content : ''
+      return this.dataMailIntern.find((element) => element.value === id).content;
     },
 
     selectMail(item){

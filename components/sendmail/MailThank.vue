@@ -110,7 +110,6 @@ export default {
           value["label"] = value["name"];
         });
         this.dataMailThank.unshift({ value: 0, label: "----Choose mail ----" });
-        console.log(this.dataMailThank);
       });
     },
     getContentMailThank(id) {
@@ -118,8 +117,9 @@ export default {
     },
     sendMail: function() {
       for (const [key, value] of Object.entries(this.dataSend)) {
-        value["template_id"] = value.category_mail;
-        value["content"] = this.getContentMailThank(value.category_mail);
+        value["template_id"] =1;
+        value["candidate_email"] = value.email
+        value["content"] = this.changeText(this.getContentMailThank(value.category_mail), value.name);
         axios
         .post("http://127.0.0.1:8000/api/send-mail", value)
         .then((response) => {
