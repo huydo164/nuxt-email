@@ -58,6 +58,20 @@
         {{ content }}
       </div>
     </CModal>
+    <CModal title="Success" color="success" :show.sync="warningModal1">
+      <div class="content-mail">
+        <p>Send mail success</p>
+      </div>
+    </CModal>
+    <div v-if="showLoading">
+      <CElementCover
+        :boundaries="[{ sides: ['top', 'left'], query: '.media-body' }]"
+        :opacity="0.8"
+      >
+        <h1 class="d-inline">Loading...</h1>
+        <CSpinner size="5xl" color="success" />
+      </CElementCover>
+    </div>
   </div>
 </template>
 <script>
@@ -93,6 +107,8 @@ export default {
       LIST_STATUS,
       category_mail: 0,
       content: "",
+      showLoading: false,
+      warningModal1: false,
     };
   },
 
@@ -101,6 +117,7 @@ export default {
   },
 
   methods: {
+
     getMailThank: function() {
       const url1 = "http://127.0.0.1:8000/api/getMailThank";
       axios.get(url1).then((response) => {
@@ -112,28 +129,36 @@ export default {
         this.dataMailThank.unshift({ value: 0, label: "----Choose mail ----" });
       });
     },
+
     getContentMailThank(id) {
       return this.dataMailThank.find((element) => element.value === id).content;
     },
+
     sendMail: function() {
       for (const [key, value] of Object.entries(this.dataSend)) {
         value["template_id"] =1;
         value["candidate_email"] = value.email
         value["candidate_id"] = value.id
+        value["status"] = value.status
         value["content"] = this.changeText(this.getContentMailThank(value.category_mail), value.name);
+        this.showLoading = true;
         axios
-        .post("http://127.0.0.1:8000/api/send-mail", value);
+        .post("http://127.0.0.1:8000/api/send-mail", value).then(() => {
+          this.showLoading = false
+          this.warningModal1 = true
+        });
       }
     },
+
     changeText: function(content, name) {
       content = content.replace("[Name]", name);
       return content;
     },
 
-    getStatus(status) {
-      for (const sta of this.LIST_STATUS) {
-        if (status == sta.value) {
-          return sta.label;
+    getStatus(id) {
+      for (const status of this.LIST_STATUS) {
+        if (id == status.value) {
+          return status.label;
         }
       }
     },
@@ -154,6 +179,7 @@ export default {
         }
       });
     },
+
     selectMail(item) {
       var index = this.dataSend.findIndex((element) => element.id == item.id);
       if (index == -1) {
@@ -164,6 +190,7 @@ export default {
           : (this.dataSend[index] = item);
       }
     },
+
   },
 };
 </script>

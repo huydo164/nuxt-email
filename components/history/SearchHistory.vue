@@ -31,9 +31,17 @@
             <template #append-content><CIcon name="cil-envelope-open"/></template>
           </CInput>
         </CCol>
+        <CCol sm="4">
+          <CSelect
+            :options="LIST_STATUS"
+            :value.sync="status"
+          />
+            <template #append-content><CIcon name="cil-envelope-open"/></template>
+          </CInput>
+        </CCol>
       </CRow>
       <div class="button-center">
-          <CButton type="submit" size="" color="success" @click="searchHistory(name,email,category,position,date)"><CIcon :content="$options.freeSet.cilMagnifyingGlass" /> Search</CButton>
+          <CButton type="submit" size="" color="success" @click="searchHistory(name,email,category,position,date,status)"><CIcon :content="$options.freeSet.cilMagnifyingGlass" /> Search</CButton>
           <CButton type="reset" size="" color="danger" @click="refreshMail()"><CIcon :content="$options.freeSet.cilLoopCircular" /> Refresh </CButton>
       </div>     
     </CCardBody>
@@ -43,6 +51,7 @@
 import axios from "axios"
 import {LIST_CATEGORY} from '@/const/constdata'
 import {LIST_POSITION} from '@/const/constdata'
+import { LIST_STATUS } from "@/const/constdata";
 import { freeSet } from "@coreui/icons";
 export default {
 
@@ -51,16 +60,18 @@ export default {
     return {
       LIST_CATEGORY,
       LIST_POSITION,
+      LIST_STATUS,
       category : 0,
       position: 0,
       name: '',
       email: '',
       date: '',
+      status: -1,
     }
    },
 
    methods : {
-     searchHistory : function(name,email,category,position,date)
+     searchHistory : function(name,email,category,position,date,status)
      {
        const condition = {
           category ,
@@ -68,11 +79,12 @@ export default {
           name,
           email,
           date,
+          status,
        }
        this.$emit('set-condition',condition)
      },
 
-     refreshMail : function(name,email,category,position,date)
+     refreshMail : function(name,email,category,position,date,status)
      {
        const condition = {
           category ,
@@ -80,6 +92,7 @@ export default {
           name,
           email,
           date,
+          status,
        }
         this.$emit('set-condition',condition)
         this.category = 0  
@@ -87,6 +100,7 @@ export default {
         this.name = ''
         this.email = ''
         this.date= ''
+        this.status = -1
      },
    }
 }

@@ -1,14 +1,10 @@
 <template>
-  <CSidebar
-    fixed
-    :minimize="minimize"
-    :show.sync="show"
-  >
-    <CSidebarBrand
-      :img-full="{ width: 118, height: 46, alt: 'Logo', src: 'img/brand/coreui-base-white.svg'}"
-      :img-minimized="{ width: 118, height: 46, alt: 'Logo', src: 'img/brand/coreui-signet-white.svg'}"
-      :wrapped-in-link="{ href: 'https://coreui.io/', target: '_blank'}"
-    />
+  <CSidebar fixed :minimize="minimize" :show.sync="show">
+    <CSidebarBrand to="/" class="sidebar-logo">
+      <img
+        :src="require(`@/assets/img/logo.png`)"
+      />
+    </CSidebarBrand>
     <CRenderFunction flat :content-to-render="nav" />
     <CSidebarMinimizer
       class="d-md-down-none"
@@ -18,26 +14,27 @@
 </template>
 
 <script>
-import nav from './_nav'
+import nav from "./_nav";
 import { freeSet } from "@coreui/icons";
 export default {
-  name: 'TheSidebar',
-  data () {
+  name: "TheSidebar",
+  freeSet,
+  data() {
     return {
       minimize: false,
       nav,
-      show: 'responsive'
-    }
+      show: "responsive",
+    };
   },
-  mounted () {
-    this.$root.$on('toggle-sidebar', () => {
-      const sidebarOpened = this.show === true || this.show === 'responsive'
-      this.show = sidebarOpened ? false : 'responsive'
-    })
-    this.$root.$on('toggle-sidebar-mobile', () => {
-      const sidebarClosed = this.show === 'responsive' || this.show === false
-      this.show = sidebarClosed ? true : 'responsive'
-    })
-  }
-}
+  mounted() {
+    this.$root.$on("toggle-sidebar", () => {
+      const sidebarOpened = this.show === true || this.show === "responsive";
+      this.show = sidebarOpened ? false : "responsive";
+    });
+    this.$root.$on("toggle-sidebar-mobile", () => {
+      const sidebarClosed = this.show === "responsive" || this.show === false;
+      this.show = sidebarClosed ? true : "responsive";
+    });
+  },
+};
 </script>

@@ -64,8 +64,23 @@
         {{ content }}
       </div>
     </CModal>
+    <CModal title="Success" color="success" :show.sync="warningModal1">
+      <div class="content-mail">
+        <p>Send mail success</p>
+      </div>
+    </CModal>
+    <div v-if="showLoading">
+      <CElementCover
+        :boundaries="[{ sides: ['top', 'left'], query: '.media-body' }]"
+        :opacity="0.8"
+      >
+      <h1 class="d-inline">Loading...</h1>
+      <CSpinner size="5xl" color="success" />
+    </CElementCover>
+    </div>
   </div>
 </template>
+
 <script>
 import axios from "axios";
 import moment from "moment";
@@ -109,12 +124,15 @@ export default {
       LIST_STATUS,
       warningModal: false,
       content: "",
+      showLoading: false,
+      warningModal1: false,
     };
   },
   
   mounted() {
     this.getMailIntern();
   },
+
   methods: {
 
     getMailIntern: function() {
@@ -129,25 +147,56 @@ export default {
       });
     },
 
+    // sendMail: function() {
+    //   this.errors = [];
+    //   for (const [key, value] of Object.entries(this.dataSend)) {
+    //     value["template_id"] = 2;
+    //     value["candidate_email"] = value.email
+    //     value["candidate_id"] = value.id
+    //     value["status"] = value.status
+    //     value["content"] = this.changeText(
+    //       this.getContentMailIntern(value.category_mail),
+    //       value["name"],
+    //       value["dateTime"],
+    //       this.getPosition(value["position"])
+    //     );
+    //     value["content"] = value["content"].replace(/\n/ig, "\n")
+    //     value["datetime_interview"] = value.dateTime;
+
+    //     if (!value.dateTime) {
+    //       this.errors.push('Phải nhập đầy đủ dữ liệu')
+    //     } else {
+    //       axios.post("http://127.0.0.1:8000/api/send-mailIntern", value)
+    //     }
+    //   }
+    // },
+
     sendMail: function() {
       this.errors = [];
       for (const [key, value] of Object.entries(this.dataSend)) {
         value["template_id"] = 2;
         value["candidate_email"] = value.email
         value["candidate_id"] = value.id
+        value["status"] = value.status
         value["content"] = this.changeText(
           this.getContentMailIntern(value.category_mail),
           value["name"],
           value["dateTime"],
           this.getPosition(value["position"])
         );
-        value["content"] = value["content"].replace(/\n/ig, "\n")
+        value["content"] = value["content"].replace(/\n/gi, "\n");
         value["datetime_interview"] = value.dateTime;
 
         if (!value.dateTime) {
-          this.errors.push('Phải nhập đầy đủ dữ liệu')
+          this.errors.push("Phải nhập đầy đủ dữ liệu");
         } else {
-          axios.post("http://127.0.0.1:8000/api/send-mailIntern", value)
+          this.showLoading = true;
+          axios
+            .post("http://127.0.0.1:8000/api/send-mailIntern", value)
+            .then(() => {
+              this.warningModal1 = true;
+              this.showLoading = false;
+            });
         }
       }
     },
@@ -156,10 +205,10 @@ export default {
       this.dataSend.push(item);
     },
 
-    getPosition(position) {
-      for (const pos of this.LIST_POSITION) {
-        if (position == pos.value) {
-          return pos.label;
+    getPosition(id) {
+      for (const position of this.LIST_POSITION) {
+        if (id == position.value) {
+          return position.label;
         }
       }
     },
@@ -177,10 +226,10 @@ export default {
       }
     },
 
-    getStatus(status) {
-      for (const sta of this.LIST_STATUS) {
-        if (status == sta.value) {
-          return sta.label;
+    getStatus(id) {
+      for (const status of this.LIST_STATUS) {
+        if (id == status.value) {
+          return status.label;
         }
       }
     },
@@ -193,7 +242,7 @@ export default {
     showModal(item) {
       this.dataSend.forEach((element) => {
         if(item.id == element.id){
-          this.content = this.changeText(this.getContentMailIntern(element.category_mail), item.name, item.dateTime, item.position);
+          this.content = this.changeText(this.getContentMailIntern(element.category_mail), item.name, item.dateTime, this.getPosition(item.position));
           this.warningModal = true
         }
       })
@@ -206,7 +255,9 @@ export default {
     selectMail(item){
       var index = this.dataSend.findIndex((element) => element.id == item.id);
       index == -1 ? this.dataSend.push(item) : (item.category_mail == 0 ? this.dataSend.splice(index, 1) : (this.dataSend[index] = item))
-    }
+    },
+
+    
   },
 };
 </script>

@@ -102,12 +102,14 @@ export default {
   },
 
   methods: {
-    getPosition(position) {
-      return LIST_POSITION.find((element) => element.value === position).label;
+    getPosition(id) {
+      const position = LIST_POSITION.find((element) => element.value === id);
+      return position ? position.label : ''
     },
 
-    getStatus(status) {
-      return LIST_STATUS.find((element) => element.value === status).label;
+    getStatus(id) {
+      const category =  LIST_STATUS.find((element) => element.value === id);
+      return category ? category.label : ''
     },
 
     convertDate(created) {

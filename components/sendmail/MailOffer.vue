@@ -84,6 +84,20 @@
         {{ content }}
       </div>
     </CModal>
+    <CModal title="Success" color="success" :show.sync="warningModal1">
+      <div class="content-mail">
+        <p>Send mail success</p>
+      </div>
+    </CModal>
+    <div v-if="showLoading">
+      <CElementCover
+        :boundaries="[{ sides: ['top', 'left'], query: '.media-body' }]"
+        :opacity="0.8"
+      >
+        <h1 class="d-inline">Loading...</h1>
+        <CSpinner size="5xl" color="success" />
+      </CElementCover>
+    </div>
   </div>
 </template>
 <script>
@@ -131,6 +145,8 @@ export default {
       LIST_STATUS,
       content: "",
       warningModal: false,
+      showLoading: false,
+      warningModal1: false,
     };
   },
 
@@ -160,9 +176,11 @@ export default {
         if (!value.date || !value.salary) {
           this.errors.push("Phải nhập đầy đủ dữ liệu");
         } else {
+          this.showLoading = true;
           value["template_id"] = 3;
           value["candidate_email"] = value.email
           value["candidate_id"] = value.id
+          value["status"] = value.status
           value["content"] = this.changeText(
             this.getContentMailOffer(value.category_mail),
             value["name"],
@@ -172,7 +190,10 @@ export default {
           );
           value["date_work"] = value.date
           value["salary"] = value.salary
-          axios.post("http://127.0.0.1:8000/api/send-mailOffer", value)
+          axios.post("http://127.0.0.1:8000/api/send-mailOffer", value).then(() => {
+            this.warningModal1 = true;
+            this.showLoading = false;
+          })
         }
       }
     },
@@ -209,18 +230,18 @@ export default {
       }
     },
 
-    getPosition(position) {
-      for (const pos of this.LIST_POSITION) {
-        if (position == pos.value) {
-          return pos.label;
+    getPosition(id) {
+      for (const position of this.LIST_POSITION) {
+        if (id == position.value) {
+          return position.label;
         }
       }
     },
 
-    getStatus(status) {
-      for (const sta of this.LIST_STATUS) {
-        if (status == sta.value) {
-          return sta.label;
+    getStatus(id) {
+      for (const status of this.LIST_STATUS) {
+        if (id == status.value) {
+          return status.label;
         }
       }
     },

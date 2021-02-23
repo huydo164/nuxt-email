@@ -29,6 +29,11 @@
              {{getPosition(item.position)}}
           </td>
         </template>
+        <template #status="{item}">
+          <td>
+             {{getStatus(item.status)}}
+          </td>
+        </template>
         <template #created_at="{item}">
           <td>
              {{convertDate(item.created_at)}}
@@ -56,6 +61,7 @@
 import axios from "axios"
 import moment from "moment"
 import { LIST_POSITION } from "@/const/constdata";
+import { LIST_STATUS } from "@/const/constdata";
 import { LIST_CATEGORY } from "@/const/constdata";
 const fields = [
   {key : 'candidate_id',label :'Name'},
@@ -64,6 +70,10 @@ const fields = [
   {
     key: 'position',
     label: 'Position'
+  },
+  {
+    key: 'status',
+    label: 'Status',
   },
   {key: 'created_at', label: 'Created At'},
   { 
@@ -100,8 +110,12 @@ export default {
       return category ? category.label : ''
     },
 
-    showModal(item){
+    getStatus(id) {
+      const category =  LIST_STATUS.find((element) => element.value === id);
+      return category ? category.label : ''
+    },
 
+    showModal(item){
       this.content = item.content.replaceAll( "<br />" , "\n", item.content)
       this.warningModal = true
     },
